@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E-Connect Enterprise Knowledge</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <div class="app-container">
+
+        <!-- LEFT SIDEBAR -->
+        <aside class="sidebar">
+            <div class="brand">
+                <img src="/static/images/logo.png" class="company-logo" alt="Logo">
+                <div>
+                    <h2>E-Connect</h2>
+                    <p>Knowledge Simplified</p>
+                </div>
+            </div>
+
+            <button class="new-chat-btn" onclick="location.reload()">+ New Chat</button>
+
+            <div class="menu-title" style="margin-top: 30px; font-size: 0.75rem; color: #94a3b8;">MAIN</div>
+            <nav class="sidebar-nav">
+                 <a href="#" class="nav-link active" data-page="ai-assistant">AI Assistant</a>
+                 <a href="#" class="nav-link" data-page="documents">Documents</a>
+                 <a href="#" class="nav-link" data-page="knowledge">Knowledge Base</a>
+                 <a href="#" class="nav-link" data-page="analytics">Analytics</a>
+                 <a href="#" class="nav-link" data-page="reports">Reports</a>
+                 <a href="#" class="nav-link" data-page="settings">Settings</a>
+            </nav>
+
+            <div class="profile-card">
+                <div class="avatar">VV</div>
+                <div>
+                    <strong>Veroha Vagrecha</strong>
+                    <p style="font-size: 0.8rem; color: #94a3b8;">Admin</p>
+                </div>
+            </div>
+        </aside>
+
+        <!-- MAIN CONTENT AREA -->
+        <main class="chat-area">
+            <!-- COMMON HEADER -->
+            <header class="chat-header">
+                <div>
+                    <h1 id="view-title">AI Document Assistant</h1>
+                    <p id="view-subtitle">Your Intelligent Knowledge Partner</p>
+                </div>
+                <input type="text" class="search-box" placeholder="Search documents...">
+            </header>
+
+            <!-- VIEW 1: AI ASSISTANT (Chat View) -->
+            <div class="view-section" id="view-ai-assistant">
+                <div class="chat-history" id="chat-history">
+                    <div class="message ai-msg">
+                        <h3>👋 Hello Veroha!</h3>
+                        <p>I can help you:</p>
+                        <ul>
+                            <li>Find information from documents</li>
+                            <li>Summarize content</li>
+                            <li>Compare documents</li>
+                            <li>Generate reports</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="quick-actions">
+                    <button onclick="sendQuickAction('Summarize this document')">Summarize Document</button>
+                    <button onclick="sendQuickAction('Compare this document')">Compare Documents</button>
+                    <button onclick="sendQuickAction('Generate report')">Generate Report</button>
+                </div>
+
+                <div class="chat-input-container">
+                    <button id="mic-btn">🎤</button>
+                    <input type="text" id="user-input" placeholder="Ask anything about your documents...">
+                    <button id="send-btn">➤</button>
+                </div>
+            </div>
+
+            <!-- VIEW 2: DOCUMENTS -->
+            <div class="view-section" id="view-documents" style="display: none;">
+                <div class="message" style="max-width: 100%;">
+                    <h3>Managed Enterprise Documents</h3>
+                    <p style="color: var(--text-secondary); margin-top: 10px;">Here you can view, inspect, and manage all uploaded PDF files currently indexed in the system.</p>
+                </div>
+            </div>
+
+            <!-- VIEW 3: KNOWLEDGE BASE -->
+            <div class="view-section" id="view-knowledge" style="display: none;">
+                <div class="message" style="max-width: 100%;">
+                    <h3>Vector Knowledge Base</h3>
+                    <p style="color: var(--text-secondary); margin-top: 10px;">Status: Active FAISS Vector Store connected with HuggingFace Embeddings.</p>
+                </div>
+            </div>
+
+            <!-- VIEW 4: ANALYTICS -->
+            <div class="view-section" id="view-analytics" style="display: none;">
+                <div class="message" style="max-width: 100%;">
+                    <h3>System Analytics & Metrics</h3>
+                    <p style="color: var(--text-secondary); margin-top: 10px;">Total Queries Handled: 0 | Model Runtime: Healthy (Llama 3.2)</p>
+                </div>
+            </div>
+
+            <!-- VIEW 5: REPORTS -->
+            <div class="view-section" id="view-reports" style="display: none;">
+                <div class="message" style="max-width: 100%;">
+                    <h3>Audit Reports</h3>
+                    <p style="color: var(--text-secondary); margin-top: 10px;">No custom reports generated yet. Use the chat assistant to compile summaries.</p>
+                </div>
+            </div>
+
+            <!-- VIEW 6: SETTINGS -->
+            <div class="view-section" id="view-settings" style="display: none;">
+                <div class="message" style="max-width: 100%;">
+                    <h3>Platform Settings</h3>
+                    <p style="color: var(--text-secondary); margin-top: 10px;">Environment: Development (Flask Server Active on Port 5000)</p>
+                </div>
+            </div>
+        </main>
+
+        <!-- RIGHT SIDEBAR -->
+        <aside class="info-sidebar">
+            <div class="upload-card">
+                <h3>Upload Document</h3>
+                <div class="upload-dropzone">Drag & Drop PDF Here</div>
+                <input type="file" id="pdf-upload" accept=".pdf">
+                <button id="upload-btn">Upload</button>
+                <p id="upload-status" style="margin-top: 10px; font-size: 0.8rem;"></p>
+            </div>
+
+            <div class="recent-docs">
+                <h3>Recent Documents</h3>
+                <div id="recent-documents-list">
+                    <div class="doc-item">HR_Policy.pdf</div>
+                    <div class="doc-item">Employee_Handbook.pdf</div>
+                    <div class="doc-item">Security_Guidelines.pdf</div>
+                </div>
+            </div>
+        </aside>
+
+    </div>
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>
