@@ -1,0 +1,13 @@
+Flask
+Flask-Cors
+python-dotenv
+Werkzeug
+pypdf
+langchain
+langchain-community
+langchain-text-splitters
+langchain-huggingface
+sentence-transformers
+transformers
+torch
+faiss-cpu

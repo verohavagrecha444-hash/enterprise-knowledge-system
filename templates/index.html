@@ -1,146 +1,686 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
     <title>E-Connect Enterprise Knowledge</title>
-    <link rel="stylesheet" href="/static/css/style.css">
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='css/style.css') }}"
+    >
 </head>
+
 <body>
-    <div class="app-container">
 
-        <!-- LEFT SIDEBAR -->
-        <aside class="sidebar">
-            <div class="brand">
-                <img src="/static/images/logo.png" class="company-logo" alt="Logo">
-                <div>
-                    <h2>E-Connect</h2>
-                    <p>Knowledge Simplified</p>
-                </div>
+<div class="app-container">
+
+    <!-- ================================================== -->
+    <!-- LEFT SIDEBAR                                       -->
+    <!-- ================================================== -->
+
+    <aside class="sidebar">
+
+        <!-- BRAND -->
+        <div class="brand">
+
+            <img
+                src="{{ url_for('static', filename='images/logo.png') }}"
+                alt="E-Connect logo"
+                onerror="this.style.display='none'"
+            >
+
+            <div>
+                <h2>E-Connect</h2>
+                <p>Knowledge Simplified</p>
             </div>
 
-            <button class="new-chat-btn" onclick="location.reload()">+ New Chat</button>
+        </div>
 
-            <div class="menu-title" style="margin-top: 30px; font-size: 0.75rem; color: #94a3b8;">MAIN</div>
-            <nav class="sidebar-nav">
-                 <a href="#" class="nav-link active" data-page="ai-assistant">AI Assistant</a>
-                 <a href="#" class="nav-link" data-page="documents">Documents</a>
-                 <a href="#" class="nav-link" data-page="knowledge">Knowledge Base</a>
-                 <a href="#" class="nav-link" data-page="analytics">Analytics</a>
-                 <a href="#" class="nav-link" data-page="reports">Reports</a>
-                 <a href="#" class="nav-link" data-page="settings">Settings</a>
-            </nav>
 
-            <div class="profile-card">
-                <div class="avatar">VV</div>
-                <div>
-                    <strong>Veroha Vagrecha</strong>
-                    <p style="font-size: 0.8rem; color: #94a3b8;">Admin</p>
-                </div>
+        <!-- NEW CHAT BUTTON -->
+        <button
+            class="new-chat-btn"
+            id="new-chat-btn"
+            type="button"
+        >
+            ＋ New Chat
+        </button>
+
+
+        <!-- CHAT HISTORY -->
+        <div class="chat-history-section">
+
+            <div class="chat-history-heading">
+
+                <span>YOUR CONVERSATIONS</span>
+
+                <button
+                    id="refresh-chats-btn"
+                    type="button"
+                    class="chat-history-refresh"
+                    title="Refresh conversations"
+                    aria-label="Refresh conversations"
+                >
+                    ↻
+                </button>
+
             </div>
-        </aside>
 
-        <!-- MAIN CONTENT AREA -->
-        <main class="chat-area">
-            <!-- COMMON HEADER -->
-            <header class="chat-header">
-                <div>
-                    <h1 id="view-title">AI Document Assistant</h1>
-                    <p id="view-subtitle">Your Intelligent Knowledge Partner</p>
+            <!--
+                JavaScript will populate this container
+                with saved conversations from Firestore.
+            -->
+            <div
+                id="chat-list"
+                class="chat-list"
+                aria-label="Saved conversations"
+            >
+                <p class="chat-list-empty">
+                    Loading conversations...
+                </p>
+            </div>
+
+        </div>
+
+
+        <!-- MAIN NAVIGATION -->
+        <div class="nav-heading">
+            MAIN
+        </div>
+
+        <nav class="sidebar-nav">
+
+            <a
+                href="#"
+                class="nav-link active"
+                data-page="ai-assistant"
+            >
+                AI Assistant
+            </a>
+
+            <a
+                href="#"
+                class="nav-link"
+                data-page="documents"
+            >
+                Documents
+            </a>
+
+            <a
+                href="#"
+                class="nav-link"
+                data-page="knowledge"
+            >
+                Knowledge Base
+            </a>
+
+            <a
+                href="#"
+                class="nav-link"
+                data-page="analytics"
+            >
+                Analytics
+            </a>
+
+            <a
+                href="#"
+                class="nav-link"
+                data-page="reports"
+            >
+                Reports
+            </a>
+
+            <a
+                href="#"
+                class="nav-link"
+                data-page="settings"
+            >
+                Settings
+            </a>
+
+        </nav>
+
+
+        <!-- USER PROFILE -->
+        <div class="profile-card">
+
+            <div class="avatar">
+                VV
+            </div>
+
+            <div>
+                <strong>Veroha Vagrecha</strong>
+                <span>Admin</span>
+            </div>
+
+        </div>
+
+    </aside>
+
+
+    <!-- ================================================== -->
+    <!-- MAIN CONTENT                                       -->
+    <!-- ================================================== -->
+
+    <main class="chat-area">
+
+        <!-- PAGE HEADER -->
+        <header class="chat-header">
+
+            <div>
+
+                <h1 id="page-title">
+                    AI Document Assistant
+                </h1>
+
+                <p id="page-subtitle">
+                    Your Intelligent Knowledge Partner
+                </p>
+
+            </div>
+
+            <input
+                id="document-search"
+                class="search-box"
+                type="search"
+                placeholder="Search documents..."
+                aria-label="Search documents"
+            >
+
+        </header>
+
+
+        <!-- ================================================== -->
+        <!-- AI ASSISTANT PAGE                                  -->
+        <!-- ================================================== -->
+
+        <section
+            id="view-ai-assistant"
+            class="view-section active-view"
+        >
+
+            <!-- CHAT MESSAGES -->
+            <div
+                id="chat-history"
+                class="chat-history"
+            >
+
+                <!-- Default welcome message -->
+                <div class="message assistant-message welcome-message">
+
+                    <h3>👋 Hello Veroha!</h3>
+
+                    <p>I can help you:</p>
+
+                    <ul>
+                        <li>Find information from documents</li>
+                        <li>Summarize PDF content</li>
+                        <li>Count words and phrases in retrieved passages</li>
+                        <li>Answer questions using document context</li>
+                        <li>Generate document reports</li>
+                    </ul>
+
                 </div>
-                <input type="text" class="search-box" placeholder="Search documents...">
-            </header>
 
-            <!-- VIEW 1: AI ASSISTANT (Chat View) -->
-            <div class="view-section" id="view-ai-assistant">
-                <div class="chat-history" id="chat-history">
-                    <div class="message ai-msg">
-                        <h3>👋 Hello Veroha!</h3>
-                        <p>I can help you:</p>
-                        <ul>
-                            <li>Find information from documents</li>
-                            <li>Summarize content</li>
-                            <li>Compare documents</li>
-                            <li>Generate reports</li>
-                        </ul>
+            </div>
+
+
+            <!-- QUICK ACTIONS -->
+            <div class="quick-actions">
+
+                <button
+                    type="button"
+                    class="quick-action"
+                    data-action="Summarize the uploaded document"
+                >
+                    Summarize Document
+                </button>
+
+                <button
+                    type="button"
+                    class="quick-action"
+                    data-action="Compare the uploaded documents and explain their main differences"
+                >
+                    Compare Documents
+                </button>
+
+                <button
+                    type="button"
+                    class="quick-action"
+                    data-action="Generate a report of the uploaded documents, including key points and important findings"
+                >
+                    Generate Report
+                </button>
+
+            </div>
+
+
+            <!-- CHAT INPUT -->
+            <form
+                id="chat-form"
+                class="chat-input-container"
+            >
+
+                <!-- VOICE INPUT -->
+                <button
+                    id="mic-btn"
+                    class="mic-btn"
+                    type="button"
+                    title="Voice input"
+                    aria-label="Voice input"
+                >
+                    🎙️
+                </button>
+
+                <!-- QUESTION INPUT -->
+                <input
+                    id="user-input"
+                    type="text"
+                    placeholder="Ask anything about your documents..."
+                    autocomplete="off"
+                >
+
+                <!-- SEND BUTTON -->
+                <button
+                    id="send-btn"
+                    type="submit"
+                    aria-label="Send question"
+                >
+                    ➤
+                </button>
+
+            </form>
+
+
+            <!-- CHAT STATUS -->
+            <div
+                id="chat-status"
+                class="status-line"
+                aria-live="polite"
+            ></div>
+
+        </section>
+
+
+        <!-- ================================================== -->
+        <!-- DOCUMENTS PAGE                                     -->
+        <!-- ================================================== -->
+
+        <section
+            id="view-documents"
+            class="view-section"
+            hidden
+        >
+
+            <div class="page-card">
+
+                <div class="section-heading">
+
+                    <h2>Managed Documents</h2>
+
+                    <button
+                        id="refresh-documents-btn"
+                        class="text-button"
+                        type="button"
+                    >
+                        Refresh
+                    </button>
+
+                </div>
+
+                <p class="muted">
+                    View uploaded PDFs and their processing information.
+                </p>
+
+                <div class="stat-row">
+
+                    <div class="stat-card">
+                        <span>Total documents</span>
+                        <strong id="documents-total">0</strong>
                     </div>
+
+                    <div class="stat-card">
+                        <span>Indexed chunks</span>
+                        <strong id="documents-processed">0</strong>
+                    </div>
+
                 </div>
 
-                <div class="quick-actions">
-                    <button onclick="sendQuickAction('Summarize this document')">Summarize Document</button>
-                    <button onclick="sendQuickAction('Compare this document')">Compare Documents</button>
-                    <button onclick="sendQuickAction('Generate report')">Generate Report</button>
+                <div
+                    id="documents-content"
+                    class="data-list"
+                >
+                    <p class="muted">
+                        Loading documents...
+                    </p>
                 </div>
 
-                <div class="chat-input-container">
-                    <button id="mic-btn">🎤</button>
-                    <input type="text" id="user-input" placeholder="Ask anything about your documents...">
-                    <button id="send-btn">➤</button>
-                </div>
             </div>
 
-            <!-- VIEW 2: DOCUMENTS -->
-            <div class="view-section" id="view-documents" style="display: none;">
-                <div class="message" style="max-width: 100%;">
-                    <h3>Managed Enterprise Documents</h3>
-                    <p style="color: var(--text-secondary); margin-top: 10px;">Here you can view, inspect, and manage all uploaded PDF files currently indexed in the system.</p>
+        </section>
+
+
+        <!-- ================================================== -->
+        <!-- KNOWLEDGE BASE PAGE                                -->
+        <!-- ================================================== -->
+
+        <section
+            id="view-knowledge"
+            class="view-section"
+            hidden
+        >
+
+            <div class="page-card">
+
+                <h2>Knowledge Base</h2>
+
+                <p class="muted">
+                    Overview of documents and text chunks available for semantic search.
+                </p>
+
+                <div class="stat-row">
+
+                    <div class="stat-card">
+                        <span>Documents</span>
+                        <strong id="knowledge-documents">0</strong>
+                    </div>
+
+                    <div class="stat-card">
+                        <span>Indexed vectors</span>
+                        <strong id="knowledge-chunks">0</strong>
+                    </div>
+
                 </div>
+
+                <div
+                    id="knowledge-content"
+                    class="data-list"
+                ></div>
+
             </div>
 
-            <!-- VIEW 3: KNOWLEDGE BASE -->
-            <div class="view-section" id="view-knowledge" style="display: none;">
-                <div class="message" style="max-width: 100%;">
-                    <h3>Vector Knowledge Base</h3>
-                    <p style="color: var(--text-secondary); margin-top: 10px;">Status: Active FAISS Vector Store connected with HuggingFace Embeddings.</p>
+        </section>
+
+
+        <!-- ================================================== -->
+        <!-- ANALYTICS PAGE                                     -->
+        <!-- ================================================== -->
+
+        <section
+            id="view-analytics"
+            class="view-section"
+            hidden
+        >
+
+            <div class="page-card">
+
+                <h2>System Analytics</h2>
+
+                <p class="muted">
+                    A summary of activity in this local application.
+                </p>
+
+                <div class="stat-row four-stats">
+
+                    <div class="stat-card">
+                        <span>Documents</span>
+                        <strong id="analytics-documents">0</strong>
+                    </div>
+
+                    <div class="stat-card">
+                        <span>Questions this session</span>
+                        <strong id="analytics-questions">0</strong>
+                    </div>
+
+                    <div class="stat-card">
+                        <span>Uploads</span>
+                        <strong id="analytics-uploads">0</strong>
+                    </div>
+
+                    <div class="stat-card">
+                        <span>Indexed vectors</span>
+                        <strong id="analytics-chunks">0</strong>
+                    </div>
+
                 </div>
+
+                <div
+                    id="analytics-content"
+                    class="data-list"
+                ></div>
+
             </div>
 
-            <!-- VIEW 4: ANALYTICS -->
-            <div class="view-section" id="view-analytics" style="display: none;">
-                <div class="message" style="max-width: 100%;">
-                    <h3>System Analytics & Metrics</h3>
-                    <p style="color: var(--text-secondary); margin-top: 10px;">Total Queries Handled: 0 | Model Runtime: Healthy (Llama 3.2)</p>
+        </section>
+
+
+        <!-- ================================================== -->
+        <!-- REPORTS PAGE                                       -->
+        <!-- ================================================== -->
+
+        <section
+            id="view-reports"
+            class="view-section"
+            hidden
+        >
+
+            <div class="page-card">
+
+                <h2>Document Reports</h2>
+
+                <p class="muted">
+                    Generate a report using retrieved document content.
+                </p>
+
+                <label for="report-document">
+                    Choose a document
+                </label>
+
+                <select id="report-document">
+
+                    <option value="">
+                        All uploaded documents / retrieved context
+                    </option>
+
+                </select>
+
+                <button
+                    id="generate-report-btn"
+                    class="primary-button"
+                    type="button"
+                >
+                    Generate Report
+                </button>
+
+                <p
+                    id="report-status"
+                    class="status-line"
+                    aria-live="polite"
+                ></p>
+
+                <div
+                    id="reports-content"
+                    class="report-output"
+                >
+                    Your generated report will appear here.
                 </div>
+
             </div>
 
-            <!-- VIEW 5: REPORTS -->
-            <div class="view-section" id="view-reports" style="display: none;">
-                <div class="message" style="max-width: 100%;">
-                    <h3>Audit Reports</h3>
-                    <p style="color: var(--text-secondary); margin-top: 10px;">No custom reports generated yet. Use the chat assistant to compile summaries.</p>
+        </section>
+
+
+        <!-- ================================================== -->
+        <!-- SETTINGS PAGE                                      -->
+        <!-- ================================================== -->
+
+        <section
+            id="view-settings"
+            class="view-section"
+            hidden
+        >
+
+            <div class="page-card">
+
+                <h2>Settings</h2>
+
+                <p class="muted">
+                    Manage local application options.
+                </p>
+
+                <!-- CLEAR CURRENT CHAT -->
+                <div class="setting-row">
+
+                    <div>
+
+                        <strong>Clear chat history</strong>
+
+                        <p class="muted">
+                            Remove the current conversation and its messages.
+                        </p>
+
+                    </div>
+
+                    <button
+                        id="clear-chat-btn"
+                        class="danger-button"
+                        type="button"
+                    >
+                        Clear Chat
+                    </button>
+
                 </div>
-            </div>
 
-            <!-- VIEW 6: SETTINGS -->
-            <div class="view-section" id="view-settings" style="display: none;">
-                <div class="message" style="max-width: 100%;">
-                    <h3>Platform Settings</h3>
-                    <p style="color: var(--text-secondary); margin-top: 10px;">Environment: Development (Flask Server Active on Port 5000)</p>
+
+                <!-- REFRESH DATA -->
+                <div class="setting-row">
+
+                    <div>
+
+                        <strong>Refresh document data</strong>
+
+                        <p class="muted">
+                            Reload document lists and statistics.
+                        </p>
+
+                    </div>
+
+                    <button
+                        id="settings-refresh-btn"
+                        class="text-button"
+                        type="button"
+                    >
+                        Refresh Data
+                    </button>
+
                 </div>
-            </div>
-        </main>
 
-        <!-- RIGHT SIDEBAR -->
-        <aside class="info-sidebar">
-            <div class="upload-card">
-                <h3>Upload Document</h3>
-                <div class="upload-dropzone">Drag & Drop PDF Here</div>
-                <input type="file" id="pdf-upload" accept=".pdf">
-                <button id="upload-btn">Upload</button>
-                <p id="upload-status" style="margin-top: 10px; font-size: 0.8rem;"></p>
+                <p class="muted small-note">
+                    Documents and the FAISS index are stored locally.
+                </p>
+
             </div>
 
-            <div class="recent-docs">
-                <h3>Recent Documents</h3>
-                <div id="recent-documents-list">
-                    <div class="doc-item">HR_Policy.pdf</div>
-                    <div class="doc-item">Employee_Handbook.pdf</div>
-                    <div class="doc-item">Security_Guidelines.pdf</div>
-                </div>
-            </div>
-        </aside>
+        </section>
 
-    </div>
-    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    </main>
+
+
+    <!-- ================================================== -->
+    <!-- RIGHT SIDEBAR                                      -->
+    <!-- ================================================== -->
+
+    <aside class="info-sidebar">
+
+        <!-- PDF UPLOAD CARD -->
+        <div class="upload-card">
+
+            <h2>Upload Document</h2>
+
+            <label
+                class="upload-dropzone"
+                id="upload-dropzone"
+                for="pdf-upload"
+            >
+
+                <span class="file-icon">▤</span>
+
+                <strong>Drag &amp; Drop PDF Here</strong>
+
+                <span>or choose a PDF file below</span>
+
+            </label>
+
+            <input
+                id="pdf-upload"
+                type="file"
+                accept=".pdf,application/pdf"
+            >
+
+            <button
+                id="upload-btn"
+                class="primary-button upload-button"
+                type="button"
+            >
+                Upload
+            </button>
+
+            <p
+                id="upload-status"
+                class="status-line"
+                aria-live="polite"
+            ></p>
+
+        </div>
+
+
+        <!-- RECENT DOCUMENTS -->
+        <div class="recent-docs">
+
+            <div class="section-heading">
+
+                <h2>Recent Documents</h2>
+
+                <button
+                    id="refresh-recent-btn"
+                    class="text-button"
+                    type="button"
+                >
+                    Refresh
+                </button>
+
+            </div>
+
+            <div id="recent-documents-list">
+
+                <p class="muted">
+                    No documents loaded yet.
+                </p>
+
+            </div>
+
+        </div>
+
+    </aside>
+
+</div>
+
+
+<!-- ================================================== -->
+<!-- JAVASCRIPT                                          -->
+<!-- ================================================== -->
+
+<script
+    src="{{ url_for('static', filename='js/main.js', v=3) }}"
+></script>
+
 </body>
+
 </html>

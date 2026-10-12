@@ -4,3 +4,16 @@ __pycache__/
 *.pyc
 .env
 *.db
+
+# Firebase credentials
+*firebase-adminsdk*.json
+serviceAccountKey.json
+
+# Local project data
+uploads/
+vectorstore/
+
+# Additional Python and editor files
+*.pyo
+.vscode/
+.idea/
