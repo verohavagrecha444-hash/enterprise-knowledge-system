@@ -2,6 +2,9 @@ Flask
 Flask-Cors
 python-dotenv
 Werkzeug
+gunicorn
+firebase-admin
+
 pypdf
 langchain
 langchain-community
